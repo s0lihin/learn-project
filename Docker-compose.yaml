@@ -28,6 +28,8 @@ services:
       MYSQL_DATABASE: restaurantdb
     ports:
       - "3306:3306"
+    volumes:
+      - ./restaurantDB.txt:/docker-entrypoint-initdb.d/restaurantDB.sql
     networks:
       - app-network
 

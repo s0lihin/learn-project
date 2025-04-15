@@ -3,6 +3,6 @@
     "description": "Restaurant project",
     "require": {},
     "require-dev": {
-        "phpunit/phpunit": "^10.0"
+        "phpunit/phpunit": "^9.5"
     }
 }

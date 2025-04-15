@@ -1,0 +1,63 @@
+version: '3.7'
+
+services:
+  elasticsearch:
+    build:
+      context: ./elasticsearch
+    container_name: elasticsearch
+    ports:
+      - "9200:9200"
+    environment:
+      - discovery.type=single-node
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    networks:
+      - elk-network
+
+  logstash:
+    build:
+      context: ./logstash
+    container_name: logstash
+    ports:
+      - "5044:5044"
+    volumes:
+      - ./logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    depends_on:
+      - elasticsearch
+    networks:
+      - elk-network
+
+  kibana:
+    build:
+      context: ./kibana
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - elk-network
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.17.4 
+    container_name: filebeat
+    user: root
+    volumes:
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - registry:/usr/share/filebeat/data:rw
+      - /var/log:/var/log:ro
+    depends_on:
+      - logstash
+    networks:
+      - elk-network
+volumes:
+  esdata:
+    driver: local
+  registry:
+    driver: local
+
+networks:
+  elk-network:
+    driver: bridge

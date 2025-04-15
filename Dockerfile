@@ -1,5 +1,4 @@
-
-FROM php:8.0-apache
+FROM php:8.1-apache
 
 
 RUN apt-get update && apt-get install -y --fix-missing \
@@ -11,7 +10,8 @@ RUN apt-get update && apt-get install -y --fix-missing \
     && docker-php-ext-install zip mysqli
 
 
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN a2enmod rewrite
+
 
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
@@ -22,19 +22,15 @@ RUN echo "<Directory /var/www/html>\n\
 </Directory>" >> /etc/apache2/apache2.conf
 
 
-RUN a2enmod rewrite
-
-RUN sed -i 's|http://deb.debian.org|http://ftp.us.debian.org|g' /etc/apt/sources.list
-
-
 WORKDIR /var/www/html
 
+
+COPY . .
+
+
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 COPY composer.json /var/www/html/
-
-RUN composer install
-
-
-COPY . /var/www/html/
+RUN composer install --no-dev --optimize-autoloader
 
 
 RUN chown -R www-data:www-data /var/www/html \
