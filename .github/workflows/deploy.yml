@@ -42,14 +42,14 @@ jobs:
           docker push ${{ secrets.DOCKER_USERNAME }}/restaurant-project:${{ github.sha }}
 
       
-      - name: Deploy to Server
-        env:
-          SERVER_IP: ${{ secrets.SERVER_IP }}
-          SERVER_USER: ${{ secrets.SERVER_USER }}
-          SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
-        run: |
-          sshpass -p $SERVER_PASSWORD ssh $SERVER_USER@$SERVER_IP "
-          docker pull ${{ secrets.DOCKER_USERNAME }}/restaurant-project:latest &&
-          docker stop restaurant-app || true &&
-          docker rm restaurant-app || true &&
-          docker run -d --name restaurant-app -p 80:80 ${{ secrets.DOCKER_USERNAME }}/restaurant-project:latest"
+      # - name: Deploy to Server
+      #   env:
+      #     SERVER_IP: ${{ secrets.SERVER_IP }}
+      #     SERVER_USER: ${{ secrets.SERVER_USER }}
+      #     SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
+      #   run: |
+      #     sshpass -p $SERVER_PASSWORD ssh $SERVER_USER@$SERVER_IP "
+      #     docker pull ${{ secrets.DOCKER_USERNAME }}/restaurant-project:latest &&
+      #     docker stop restaurant-app || true &&
+      #     docker rm restaurant-app || true &&
+      #     docker run -d --name restaurant-app -p 80:80 ${{ secrets.DOCKER_USERNAME }}/restaurant-project:latest"
