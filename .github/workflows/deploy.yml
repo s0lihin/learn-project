@@ -10,50 +10,50 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the code
+     
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Step 2: Set up PHP
+     
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.0'
 
-      # Step 3: Install dependencies
+      
       - name: Install Composer dependencies
         run: composer install
 
-      # Step 4: Verify PHPUnit installation
+      
       - name: Verify PHPUnit
         run: vendor/bin/phpunit --version
 
-      # Step 5: Run unit tests
+     
       - name: Run unit tests
         run: vendor/bin/phpunit --testdox
 
-      # Step 6: Log in to Docker Hub
+      
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Step 7: Build the Docker image
+      
       - name: Build Docker image
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/restaurant-project:latest .
 
-      # Step 8: Tag the Docker image with the commit SHA
+      
       - name: Tag Docker image
         run: docker tag ${{ secrets.DOCKER_USERNAME }}/restaurant-project:latest ${{ secrets.DOCKER_USERNAME }}/restaurant-project:${{ github.sha }}
 
-      # Step 9: Push the Docker image to Docker Hub
+      
       - name: Push Docker image to Docker Hub
         run: |
           docker push ${{ secrets.DOCKER_USERNAME }}/restaurant-project:latest
           docker push ${{ secrets.DOCKER_USERNAME }}/restaurant-project:${{ github.sha }}
 
-      # Step 10: Deploy the Docker image to the server
+      
       - name: Deploy to Server
         env:
           SERVER_IP: ${{ secrets.SERVER_IP }}
