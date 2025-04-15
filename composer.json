@@ -1,5 +1,8 @@
 {
     "name": "restaurant/project",
     "description": "Restaurant project",
-    "require": {}
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit": "^10.0"
+    }
 }
